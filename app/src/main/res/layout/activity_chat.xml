@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical" android:background="#0A0A0A"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <!-- Topo -->
+    <LinearLayout android:background="#1A1A1A" android:padding="15dp" android:orientation="horizontal" android:gravity="center_vertical" android:layout_width="match_parent" android:layout_height="wrap_content">
+        <ImageView android:id="@+id/btnVoltarChat" android:src="@android:drawable/ic_menu_revert" android:layout_width="28dp" android:layout_height="28dp" android:layout_marginEnd="12dp" />
+        <TextView android:text="🤖 DIRETOR IA - Guerreiros" android:textColor="#FFB700" android:textSize="18sp" android:textStyle="bold" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+    <!-- Mensagens -->
+    <androidx.recyclerview.widget.RecyclerView android:id="@+id/recyclerChat" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:padding="10dp"/>
+
+    <!-- Botão Gerar que aparece depois da conversa -->
+    <com.google.android.material.button.MaterialButton android:id="@+id/btnGerarDoChat" android:text="🔥 GERAR VÍDEO COM ESSA IDEIA" android:visibility="gone" android:backgroundTint="#FF6A00" android:textColor="#FFFFFF" android:textStyle="bold" android:layout_margin="10dp" android:layout_width="match_parent" android:layout_height="60dp"/>
+
+    <!-- Barra igual sua foto -->
+    <LinearLayout android:background="#1E1E1E" android:padding="8dp" android:gravity="center_vertical" android:layout_width="match_parent" android:layout_height="wrap_content">
+        <ImageView android:id="@+id/btnEmoji" android:src="@android:drawable/btn_star_big_on" android:layout_width="35dp" android:layout_height="35dp"/>
+        <EditText android:id="@+id/edtMensagem" android:hint="Fale como será o vídeo..." android:textColor="#FFFFFF" android:textColorHint="#888888" android:background="@drawable/bg_input_chat" android:padding="12dp" android:layout_weight="1" android:layout_marginStart="8dp" android:layout_marginEnd="8dp" android:layout_width="0dp" android:layout_height="wrap_content"/>
+        <ImageView android:id="@+id/btnAnexo" android:src="@android:drawable/ic_menu_add" android:background="?attr/selectableItemBackgroundBorderless" android:layout_width="35dp" android:layout_height="35dp"/>
+        <com.google.android.material.button.MaterialButton android:id="@+id/btnEnviar" android:text="➤" android:textSize="18sp" android:backgroundTint="#FF6A00" app:cornerRadius="50dp" android:layout_width="55dp" android:layout_height="55dp"/>
+    </LinearLayout>
+</LinearLayout>

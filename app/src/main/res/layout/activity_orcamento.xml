@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical" android:background="#0A0A0A"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <!-- BARRA DE BUSCA IGUAL YOUTUBE -->
+    <LinearLayout android:orientation="horizontal" android:background="#121212" android:padding="10dp" android:gravity="center_vertical" android:layout_width="match_parent" android:layout_height="wrap_content">
+        <ImageView android:id="@+id/btnVoltarOrcamento" android:src="@android:drawable/ic_menu_revert" android:layout_width="30dp" android:layout_height="30dp"/>
+        <LinearLayout android:background="#2A2A2A" android:orientation="horizontal" android:layout_weight="1" android:layout_marginStart="15dp" android:layout_marginEnd="10dp" android:padding="10dp" android:gravity="center_vertical" android:layout_width="0dp" android:layout_height="42dp">
+            <EditText android:id="@+id/edtBusca" android:hint="mãe do vegeta volta" android:textColor="#FFFFFF" android:textColorHint="#9E9E9E" android:background="@null" android:textSize="14sp" android:layout_weight="1" android:layout_width="0dp" android:layout_height="match_parent"/>
+            <ImageView android:id="@+id/btnClearBusca" android:src="@android:drawable/ic_menu_close_clear_cancel" android:layout_width="20dp" android:layout_height="20dp"/>
+        </LinearLayout>
+        <ImageView android:id="@+id/btnVoice" android:src="@android:drawable/ic_btn_speak_now" android:layout_width="35dp" android:layout_height="35dp"/>
+    </LinearLayout>
+
+    <!-- FILTROS IGUAL YOUTUBE -->
+    <HorizontalScrollView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="10dp" android:scrollbars="none">
+        <LinearLayout android:orientation="horizontal" android:paddingStart="10dp" android:paddingEnd="10dp" android:layout_width="wrap_content" android:layout_height="wrap_content">
+            <Button android:id="@+id/btnFiltroTudo" android:text="Tudo" android:backgroundTint="#FFFFFF" android:textColor="#000000" android:layout_marginEnd="8dp" android:layout_width="wrap_content" android:layout_height="38dp"/>
+            <Button android:id="@+id/btnFiltroShorts" android:text="Shorts" android:backgroundTint="#2A2A2A" android:textColor="#FFFFFF" android:layout_marginEnd="8dp" android:layout_width="wrap_content" android:layout_height="38dp"/>
+            <Button android:id="@+id/btnFiltroOrcamentos" android:text="Orçamentos" android:backgroundTint="#FF6A00" android:textColor="#FFFFFF" android:layout_marginEnd="8dp" android:layout_width="wrap_content" android:layout_height="38dp"/>
+            <Button android:id="@+id/btnFiltroEpicos" android:text="Vídeos Épicos" android:backgroundTint="#2A2A2A" android:textColor="#FFFFFF" android:layout_marginEnd="8dp" android:layout_width="wrap_content" android:layout_height="38dp"/>
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <!-- CONTEÚDO SCROLLÁVEL: SHORTS / TÍTULO / COPIAR-COLAR / CALCULADORA -->
+    <ScrollView android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:layout_marginTop="10dp">
+        <LinearLayout android:orientation="vertical" android:padding="16dp" android:layout_width="match_parent" android:layout_height="wrap_content">
+
+            <!-- SEÇÃO DE TÍTULO DE SHORTS E PROMPT (COPIAR, COLAR, PARTILHAR, REMOVER) -->
+            <TextView
+                android:text="🔥 TÍTULO PARA SHORTS &amp; PROMPT IA"
+                android:textColor="#FFB700"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/txtTituloShorts"
+                android:text="GOKU E VEGETA DEUS CÓSMICO VS O VILÃO QUE VOLTOU DA MORTE! 🔥"
+                android:textIsSelectable="true"
+                android:longClickable="true"
+                android:textSize="16sp"
+                android:textColor="#FFFFFF"
+                android:background="#2A2A2A"
+                android:padding="15dp"
+                android:layout_marginTop="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <EditText
+                android:id="@+id/edtConteudo"
+                android:hint="Cole o título ou prompt aqui..."
+                android:textIsSelectable="true"
+                android:longClickable="true"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#888888"
+                android:background="@drawable/bg_input_chat"
+                android:padding="15dp"
+                android:layout_marginTop="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <!-- BOTÕES: COPIAR, COLAR, PARTILHAR, REMOVER -->
+            <LinearLayout android:orientation="horizontal" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="10dp">
+                <Button android:id="@+id/btnCopiar" android:text="📋 Copiar" android:textSize="12sp" android:backgroundTint="#2A2A2A" android:textColor="#FFFFFF" android:layout_weight="1" android:layout_width="0dp" android:layout_height="wrap_content"/>
+                <Button android:id="@+id/btnColar" android:text="📄 Colar" android:textSize="12sp" android:backgroundTint="#2A2A2A" android:textColor="#FFFFFF" android:layout_weight="1" android:layout_marginStart="5dp" android:layout_width="0dp" android:layout_height="wrap_content"/>
+                <Button android:id="@+id/btnPartilhar" android:text="📤 Partilhar" android:textSize="12sp" android:backgroundTint="#FF6A00" android:textColor="#FFFFFF" android:layout_weight="1" android:layout_marginStart="5dp" android:layout_width="0dp" android:layout_height="wrap_content"/>
+                <Button android:id="@+id/btnRemover" android:text="🗑️ Remover" android:textSize="12sp" android:backgroundTint="#B71C1C" android:textColor="#FFFFFF" android:layout_weight="1" android:layout_marginStart="5dp" android:layout_width="0dp" android:layout_height="wrap_content"/>
+            </LinearLayout>
+
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#333333" android:layout_marginTop="20dp" android:layout_marginBottom="15dp"/>
+
+            <!-- CALCULADORA DE ORÇAMENTO -->
+            <TextView android:text="💰 FAZER ORÇAMENTO" android:textColor="#FFB700" android:textSize="22sp" android:textStyle="bold" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+            <TextView android:text="Calcule o valor do seu vídeo animado personalizado" android:textColor="#9E9E9E" android:textSize="13sp" android:layout_marginTop="4dp" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+
+            <TextView android:text="Duração do vídeo" android:textColor="#FFFFFF" android:textStyle="bold" android:layout_marginTop="20dp" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+            <RadioGroup android:id="@+id/rgDuracao" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="6dp">
+                <RadioButton android:id="@+id/rb5s" android:text="5 segundos - R$ 2,00 (Shorts)" android:textColor="#FFFFFF" android:tag="2.0" android:checked="true" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                <RadioButton android:id="@+id/rb10s" android:text="10 segundos - R$ 5,00 (Batalha)" android:textColor="#FFFFFF" android:tag="5.0" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                <RadioButton android:id="@+id/rb30s" android:text="30 segundos - R$ 15,00 (Filme)" android:textColor="#FFFFFF" android:tag="15.0" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+            </RadioGroup>
+
+            <TextView android:text="Efeitos Extras" android:textColor="#FFFFFF" android:textStyle="bold" android:layout_marginTop="18dp" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+            <CheckBox android:id="@+id/cbAura" android:text="Aura Dourada + R$ 1,00" android:textColor="#FFFFFF" android:tag="1.0" android:layout_marginTop="4dp" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+            <CheckBox android:id="@+id/cbMonstro" android:text="Monstro Gigante + R$ 2,00" android:textColor="#FFFFFF" android:tag="2.0" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+            <CheckBox android:id="@+id/cbLegenda" android:text="Legenda Épica + R$ 0,50" android:textColor="#FFFFFF" android:tag="0.5" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+
+            <TextView android:id="@+id/txtTotal" android:text="TOTAL: R$ 2,00" android:textColor="#FF6A00" android:textSize="28sp" android:textStyle="bold" android:layout_marginTop="25dp" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+
+            <com.google.android.material.button.MaterialButton android:id="@+id/btnEnviarOrcamento" android:text="📲 ENVIAR ORÇAMENTO NO WHATSAPP" android:textColor="#FFFFFF" android:textStyle="bold" android:backgroundTint="#25D366" android:layout_marginTop="20dp" android:layout_width="match_parent" android:layout_height="60dp"/>
+            <com.google.android.material.button.MaterialButton android:id="@+id/btnCriarComOrcamento" android:text="⚡ CRIAR BATALHA NO APP" android:textColor="#FFFFFF" android:textStyle="bold" android:backgroundTint="#FF6A00" android:layout_marginTop="10dp" android:layout_width="match_parent" android:layout_height="55dp"/>
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- MENU EMBAIXO IGUAL YOUTUBE -->
+    <LinearLayout android:orientation="horizontal" android:background="#121212" android:padding="8dp" android:layout_width="match_parent" android:layout_height="60dp">
+        <LinearLayout android:id="@+id/navInicio" android:orientation="vertical" android:gravity="center" android:layout_weight="1" android:layout_width="0dp" android:layout_height="match_parent"><ImageView android:src="@android:drawable/ic_menu_compass" android:layout_width="24dp" android:layout_height="24dp"/><TextView android:text="Início" android:textColor="#FFFFFF" android:textSize="10sp" android:layout_width="wrap_content" android:layout_height="wrap_content"/></LinearLayout>
+        <LinearLayout android:id="@+id/navShorts" android:orientation="vertical" android:gravity="center" android:layout_weight="1" android:layout_width="0dp" android:layout_height="match_parent"><ImageView android:src="@android:drawable/ic_media_play" android:layout_width="24dp" android:layout_height="24dp"/><TextView android:text="Shorts" android:textColor="#FFFFFF" android:textSize="10sp" android:layout_width="wrap_content" android:layout_height="wrap_content"/></LinearLayout>
+        <LinearLayout android:id="@+id/navCriar" android:orientation="vertical" android:gravity="center" android:layout_weight="1" android:layout_width="0dp" android:layout_height="match_parent"><ImageView android:src="@android:drawable/ic_input_add" android:layout_width="28dp" android:layout_height="28dp"/></LinearLayout>
+        <LinearLayout android:id="@+id/navInscricoes" android:orientation="vertical" android:gravity="center" android:layout_weight="1" android:layout_width="0dp" android:layout_height="match_parent"><ImageView android:src="@android:drawable/ic_menu_slideshow" android:layout_width="24dp" android:layout_height="24dp"/><TextView android:text="Inscrições" android:textColor="#FFFFFF" android:textSize="10sp" android:layout_width="wrap_content" android:layout_height="wrap_content"/></LinearLayout>
+        <LinearLayout android:id="@+id/navVoce" android:orientation="vertical" android:gravity="center" android:layout_weight="1" android:layout_width="0dp" android:layout_height="match_parent"><ImageView android:src="@android:drawable/sym_def_app_icon" android:layout_width="24dp" android:layout_height="24dp"/><TextView android:text="Você" android:textColor="#FFFFFF" android:textSize="10sp" android:layout_width="wrap_content" android:layout_height="wrap_content"/></LinearLayout>
+    </LinearLayout>
+</LinearLayout>
