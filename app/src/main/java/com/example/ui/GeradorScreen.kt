@@ -47,6 +47,8 @@ import androidx.compose.material.icons.filled.LocalFireDepartment
 import androidx.compose.material.icons.filled.MusicNote
 import androidx.compose.material.icons.filled.VolumeOff
 import androidx.compose.material.icons.filled.VolumeUp
+import androidx.compose.material.icons.filled.Wifi
+import androidx.compose.material.icons.filled.WifiOff
 import androidx.compose.material.icons.filled.ZoomIn
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -123,6 +125,7 @@ fun GeradorScreen(
     val activeDirectives by viewModel.activeDirectives.collectAsStateWithLifecycle()
     val isGenerating by viewModel.isGenerating.collectAsStateWithLifecycle()
     val generationStage by viewModel.generationStage.collectAsStateWithLifecycle()
+    val isOnline by viewModel.isOnline.collectAsStateWithLifecycle()
 
     DisposableEffect(Unit) {
         onDispose {
@@ -144,13 +147,43 @@ fun GeradorScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(
-                        text = "Criar Batalha IA",
-                        style = MaterialTheme.typography.titleLarge.copy(
-                            fontWeight = FontWeight.Bold
-                        ),
-                        color = TextPrimary
-                    )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Text(
+                            text = "Criar Batalha IA",
+                            style = MaterialTheme.typography.titleLarge.copy(
+                                fontWeight = FontWeight.Bold
+                            ),
+                            color = TextPrimary
+                        )
+                        Surface(
+                            shape = RoundedCornerShape(6.dp),
+                            color = if (isOnline) Color(0xFF00C853).copy(alpha = 0.2f) else BlazeOrange.copy(alpha = 0.2f)
+                        ) {
+                            Row(
+                                modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(4.dp)
+                            ) {
+                                Icon(
+                                    imageVector = if (isOnline) Icons.Default.Wifi else Icons.Default.WifiOff,
+                                    contentDescription = null,
+                                    tint = if (isOnline) Color(0xFF00E676) else BlazeOrange,
+                                    modifier = Modifier.size(12.dp)
+                                )
+                                Text(
+                                    text = if (isOnline) "ONLINE" else "OFFLINE",
+                                    style = MaterialTheme.typography.labelSmall.copy(
+                                        fontSize = 10.sp,
+                                        fontWeight = FontWeight.Bold
+                                    ),
+                                    color = if (isOnline) Color(0xFF00E676) else BlazeOrange
+                                )
+                            }
+                        }
+                    }
                 },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
@@ -413,7 +446,7 @@ fun GeradorScreen(
                 }
             }
 
-            // SECTION 5: Botão "Gerar Vídeo"
+            // SECTION 5: Botão "Gerar Vídeo" ou "Salvar na Fila"
             item {
                 Spacer(modifier = Modifier.height(10.dp))
                 Button(
@@ -425,6 +458,10 @@ fun GeradorScreen(
                             },
                             onError = { err ->
                                 Toast.makeText(context, err, Toast.LENGTH_LONG).show()
+                            },
+                            onSalvoNaFilaOffline = { msg ->
+                                Toast.makeText(context, msg, Toast.LENGTH_LONG).show()
+                                onNavigateBack()
                             }
                         )
                     },
@@ -446,7 +483,8 @@ fun GeradorScreen(
                             .fillMaxSize()
                             .background(
                                 Brush.horizontalGradient(
-                                    listOf(BlazeOrange, AuraFlame, DivineGold)
+                                    if (isOnline) listOf(BlazeOrange, AuraFlame, DivineGold)
+                                    else listOf(Color(0xFFE65100), Color(0xFFBF360C))
                                 )
                             ),
                         contentAlignment = Alignment.Center
@@ -456,13 +494,13 @@ fun GeradorScreen(
                             horizontalArrangement = Arrangement.spacedBy(10.dp)
                         ) {
                             Icon(
-                                imageVector = Icons.Default.Bolt,
+                                imageVector = if (isOnline) Icons.Default.Bolt else Icons.Default.WifiOff,
                                 contentDescription = "Raio Gerar Vídeo",
                                 tint = Color.White,
                                 modifier = Modifier.size(24.dp)
                             )
                             Text(
-                                text = "Gerar Vídeo",
+                                text = if (isOnline) "Gerar Vídeo IA (Online)" else "Salvar na Fila (Offline)",
                                 style = MaterialTheme.typography.titleMedium.copy(
                                     fontWeight = FontWeight.Black,
                                     letterSpacing = 1.sp

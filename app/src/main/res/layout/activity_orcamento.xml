@@ -77,11 +77,11 @@
             <TextView android:text="💰 FAZER ORÇAMENTO" android:textColor="#FFB700" android:textSize="22sp" android:textStyle="bold" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
             <TextView android:text="Calcule o valor do seu vídeo animado personalizado" android:textColor="#9E9E9E" android:textSize="13sp" android:layout_marginTop="4dp" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
 
-            <TextView android:text="Duração do vídeo" android:textColor="#FFFFFF" android:textStyle="bold" android:layout_marginTop="20dp" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+            <TextView android:text="Duração do vídeo / Produção" android:textColor="#FFFFFF" android:textStyle="bold" android:layout_marginTop="20dp" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
             <RadioGroup android:id="@+id/rgDuracao" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="6dp">
-                <RadioButton android:id="@+id/rb5s" android:text="5 segundos - R$ 2,00 (Shorts)" android:textColor="#FFFFFF" android:tag="2.0" android:checked="true" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-                <RadioButton android:id="@+id/rb10s" android:text="10 segundos - R$ 5,00 (Batalha)" android:textColor="#FFFFFF" android:tag="5.0" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-                <RadioButton android:id="@+id/rb30s" android:text="30 segundos - R$ 15,00 (Filme)" android:textColor="#FFFFFF" android:tag="15.0" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                <RadioButton android:id="@+id/rb5s" android:text="00h 10m 00s - R$ 5,00 (Episódio)" android:textColor="#FFFFFF" android:tag="5.0" android:checked="true" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                <RadioButton android:id="@+id/rb10s" android:text="01h 30m 00s - R$ 25,00 (Filme Completo)" android:textColor="#FFFFFF" android:tag="25.0" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                <RadioButton android:id="@+id/rb30s" android:text="00h 00m 30s - R$ 2,00 (Shorts Rápido)" android:textColor="#FFFFFF" android:tag="2.0" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
             </RadioGroup>
 
             <TextView android:text="Efeitos Extras" android:textColor="#FFFFFF" android:textStyle="bold" android:layout_marginTop="18dp" android:layout_width="wrap_content" android:layout_height="wrap_content"/>

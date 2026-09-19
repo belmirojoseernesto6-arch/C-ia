@@ -297,6 +297,21 @@ fun HomeScreen(
                 }
             }
 
+            // Sistema Híbrido: Metade Offline + Metade Online (Temporada, Episódio, Filme, Fila)
+            item {
+                HibridoProducaoCard(
+                    viewModel = viewModel,
+                    onOpenVideo = onOpenVideo
+                )
+            }
+
+            // Módulo de Vozes de Personagens (Dr. Fischer, Presidente, Dante, Coelho Branco, etc.)
+            item {
+                VozesPersonagensCard(
+                    viewModel = viewModel
+                )
+            }
+
             // Quick Access Cards: "Diretor IA (Chat)" and "Fazer Orçamento (YouTube style)"
             item {
                 Row(

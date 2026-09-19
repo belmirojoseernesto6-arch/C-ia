@@ -10,6 +10,10 @@ import com.example.api.VideoAiService
 import com.example.data.AppDatabase
 import com.example.data.BattleVideo
 import com.example.data.BattleVideoRepository
+import com.example.data.GeradorService
+import com.example.data.NetworkUtils
+import com.example.data.ProducaoHibrida
+import com.example.data.ProducaoHibridaRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -22,9 +26,16 @@ import java.util.Locale
 
 class BattleViewModel(application: Application) : AndroidViewModel(application) {
     private val repository: BattleVideoRepository
+    private val producaoRepo: ProducaoHibridaRepository
+    private val geradorService = GeradorService(application)
     private val prefs = application.getSharedPreferences("guerreiros_prefs", Context.MODE_PRIVATE)
 
     val allVideos: StateFlow<List<BattleVideo>>
+    val todasProducoes: StateFlow<List<ProducaoHibrida>>
+
+    // Estado da Rede (Online/Offline) em tempo real
+    private val _isOnline = MutableStateFlow(NetworkUtils.temInternet(application))
+    val isOnline: StateFlow<Boolean> = _isOnline.asStateFlow()
 
     // Daily limit of 3 free generations
     private val _freeGenerationsToday = MutableStateFlow(3)
@@ -50,11 +61,31 @@ class BattleViewModel(application: Application) : AndroidViewModel(application) 
     init {
         val db = AppDatabase.getDatabase(application)
         repository = BattleVideoRepository(db.battleVideoDao())
+        producaoRepo = ProducaoHibridaRepository(db.producaoHibridaDao())
+
         allVideos = repository.allVideos.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = emptyList()
         )
+
+        todasProducoes = producaoRepo.todasProducoes.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = emptyList()
+        )
+
+        // Observa estado da conexão de internet
+        viewModelScope.launch {
+            NetworkUtils.observeNetworkState(application).collect { online ->
+                val anterior = _isOnline.value
+                _isOnline.value = online
+                // Se acabou de reconectar, tenta processar produções pendentes na fila
+                if (!anterior && online) {
+                    processarFilaPendente()
+                }
+            }
+        }
 
         // Pre-populate sample battle if database is empty on first launch
         viewModelScope.launch {
@@ -64,6 +95,93 @@ class BattleViewModel(application: Application) : AndroidViewModel(application) 
                     populateInitialDemo(application)
                 }
             }
+        }
+    }
+
+    /**
+     * Verifica conexão atual
+     */
+    fun temInternet(): Boolean {
+        val hasNet = NetworkUtils.temInternet(getApplication())
+        _isOnline.value = hasNet
+        return hasNet
+    }
+
+    /**
+     * Motor Híbrido: Cria Episódio, Temporada ou Filme
+     * OFFLINE: Salva na fila local
+     * ONLINE: Gera de verdade via GeradorService
+     */
+    fun gerarEpisodioHibrido(
+        producao: ProducaoHibrida,
+        onMensagem: (String) -> Unit,
+        onSucessoGerado: ((Int) -> Unit)? = null
+    ) {
+        viewModelScope.launch {
+            if (!temInternet()) {
+                // OFFLINE: Salva na fila local
+                producaoRepo.salvarNaFila(producao)
+                val msg = "Sem internet. Salvo na fila! ✅ Quando tiver internet, vamos gerar seu ${producao.tipo.lowercase()} de ${producao.getDuracaoFormatada()}"
+                onMensagem(msg)
+                return@launch
+            }
+
+            // ONLINE: Gera de verdade
+            try {
+                _isGenerating.value = true
+                _generationStage.value = "Gerando ${producao.tipo} (${producao.getDuracaoFormatada()})..."
+                val video = geradorService.gerarEpisodio(producao)
+                val id = repository.insertVideo(video).toInt()
+
+                // Salva producao marcada como GERADA
+                producaoRepo.salvarNaFila(
+                    producao.copy(
+                        status = ProducaoHibrida.STATUS_GERADO,
+                        videoUri = video.videoUri,
+                        mensagemStatus = "Gerado com sucesso! ✅"
+                    )
+                )
+
+                _isGenerating.value = false
+                onMensagem("🎉 ${producao.tipo} de ${producao.getDuracaoFormatada()} gerado com sucesso!")
+                onSucessoGerado?.invoke(id)
+            } catch (e: Exception) {
+                _isGenerating.value = false
+                // Se falhar a chamada online, salva com segurança na fila
+                producaoRepo.salvarNaFila(producao)
+                onMensagem("Erro na conexão (${e.message}). Salvo na fila para tentar novamente!")
+            }
+        }
+    }
+
+    /**
+     * Processa itens na fila quando a internet volta
+     */
+    fun processarFilaPendente() {
+        viewModelScope.launch {
+            if (!temInternet()) return@launch
+            val fila = producaoRepo.getProducoesNaFila()
+            for (item in fila) {
+                try {
+                    val video = geradorService.gerarEpisodio(item)
+                    repository.insertVideo(video)
+                    producaoRepo.atualizar(
+                        item.copy(
+                            status = ProducaoHibrida.STATUS_GERADO,
+                            videoUri = video.videoUri,
+                            mensagemStatus = "Gerado automaticamente ao conectar à internet! 🌐"
+                        )
+                    )
+                } catch (_: Exception) {
+                    // Mantém na fila para próxima tentativa
+                }
+            }
+        }
+    }
+
+    fun deletarProducao(producao: ProducaoHibrida) {
+        viewModelScope.launch {
+            producaoRepo.deletar(producao)
         }
     }
 
@@ -113,6 +231,18 @@ class BattleViewModel(application: Application) : AndroidViewModel(application) 
             durationSeconds = 6
         )
         repository.insertVideo(demoVideo)
+
+        val demoEpisodio = ProducaoHibrida(
+            tipo = ProducaoHibrida.TIPO_EPISODIO,
+            titulo = "Episódio 01: O Despertar da Fúria Cósmica",
+            historia = "Goku e Vegeta enfrentam o guerreiro dimensional após a fenda se abrir no céu.",
+            duracaoHoras = 0,
+            duracaoMinutos = 10,
+            duracaoSegundos = 0,
+            status = ProducaoHibrida.STATUS_GERADO,
+            mensagemStatus = "Disponível para assistir offline! ✅"
+        )
+        producaoRepo.salvarNaFila(demoEpisodio)
     }
 
     fun setImageUri(uri: Uri?) {
@@ -135,7 +265,6 @@ class BattleViewModel(application: Application) : AndroidViewModel(application) 
             current.remove(directive)
         } else {
             current.add(directive)
-            // Also append or enhance prompt text nicely
             if (promptText.value.isBlank()) {
                 promptText.value = when (directive) {
                     "Lutar" -> "Dois guerreiros lutando com velocidade extrema"
@@ -155,21 +284,46 @@ class BattleViewModel(application: Application) : AndroidViewModel(application) 
         selectedSound.value = sound
     }
 
-    fun generateVideo(onSuccess: (Int) -> Unit, onError: (String) -> Unit) {
+    fun generateVideo(
+        onSuccess: (Int) -> Unit,
+        onError: (String) -> Unit,
+        onSalvoNaFilaOffline: ((String) -> Unit)? = null
+    ) {
         updateDailyGenerations()
-        if (_freeGenerationsToday.value <= 0) {
-            onError("Limite diário de 3 gerações grátis atingido! Volte amanhã para novos vídeos de batalha.")
-            return
-        }
 
         if (selectedImageUri.value == null && selectedSampleRes.value == null) {
             onError("Selecione uma imagem primeiro!")
             return
         }
 
+        // Verificação híbrida de conexão:
+        if (!temInternet()) {
+            val producao = ProducaoHibrida(
+                tipo = ProducaoHibrida.TIPO_EPISODIO,
+                titulo = promptText.value.take(40).ifBlank { "Episódio de Batalha" },
+                historia = promptText.value.ifBlank { "Batalha épica de guerreiros anime com aura dourada" },
+                duracaoHoras = 0,
+                duracaoMinutos = 10,
+                duracaoSegundos = 0,
+                audioEstilo = selectedSound.value,
+                status = ProducaoHibrida.STATUS_NA_FILA
+            )
+            viewModelScope.launch {
+                producaoRepo.salvarNaFila(producao)
+                val msg = "Sem internet. Salvo na fila! ✅ Quando tiver internet, vamos gerar seu episódio de ${producao.getDuracaoFormatada()}"
+                onSalvoNaFilaOffline?.invoke(msg) ?: onError(msg)
+            }
+            return
+        }
+
+        if (_freeGenerationsToday.value <= 0) {
+            onError("Limite diário de 3 gerações grátis atingido! Volte amanhã para novos vídeos de batalha.")
+            return
+        }
+
         viewModelScope.launch {
             _isGenerating.value = true
-            _generationStage.value = "Canalizando energia de IA..."
+            _generationStage.value = "Canalizando energia de IA online..."
             try {
                 _generationStage.value = "Analisando guerreiro e roteirizando batalha..."
                 val video = VideoAiService.generateBattleVideo(
@@ -192,7 +346,7 @@ class BattleViewModel(application: Application) : AndroidViewModel(application) 
                 onSuccess(id)
             } catch (e: Exception) {
                 _isGenerating.value = false
-                onError(e.message ?: "Erro desconhecido ao gerar vídeo")
+                onError(e.message ?: "Erro ao gerar vídeo online")
             }
         }
     }

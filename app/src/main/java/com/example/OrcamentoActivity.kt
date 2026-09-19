@@ -152,18 +152,19 @@ class OrcamentoActivity : AppCompatActivity() {
             Toast.makeText(this, "Exibindo todas as opções", Toast.LENGTH_SHORT).show()
         }
         btnFiltroShorts.setOnClickListener {
-            findViewById<RadioButton>(R.id.rb5s).isChecked = true
-            Toast.makeText(this, "Formato Shorts selecionado: 5 segundos", Toast.LENGTH_SHORT).show()
+            findViewById<RadioButton>(R.id.rb30s).isChecked = true
+            Toast.makeText(this, "Formato Shorts selecionado: 00h 00m 30s", Toast.LENGTH_SHORT).show()
         }
         btnFiltroOrcamentos.setOnClickListener {
-            Toast.makeText(this, "Calculadora de Orçamento Ativa", Toast.LENGTH_SHORT).show()
+            findViewById<RadioButton>(R.id.rb5s).isChecked = true
+            Toast.makeText(this, "Formato Episódio selecionado: 00h 10m 00s", Toast.LENGTH_SHORT).show()
         }
         btnFiltroEpicos.setOnClickListener {
-            findViewById<RadioButton>(R.id.rb30s).isChecked = true
+            findViewById<RadioButton>(R.id.rb10s).isChecked = true
             cbAura.isChecked = true
             cbMonstro.isChecked = true
             cbLegenda.isChecked = true
-            Toast.makeText(this, "Combo Batalha Épica Completa ativado!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Formato Filme Completo selecionado: 01h 30m 00s", Toast.LENGTH_SHORT).show()
         }
 
         // Busca estilo YouTube
